@@ -11,8 +11,8 @@ defmodule Chop do
   	guess(guess, answer..last)
   end
   def guess(guess, first..last) do
-  	range = (last - first)
-  	middle = first + div(range - 1, 2)
+  	range = (last - first - 1)
+  	middle = first + div(range, 2)
    	IO.puts "Is it #{middle}? #{first} - #{last}"
    	guess(guess, middle, first..last)
   end
