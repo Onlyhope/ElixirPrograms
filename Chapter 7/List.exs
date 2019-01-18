@@ -15,10 +15,18 @@ defmodule MyList do
   	my_max(tail, head)
   end
   def my_max([], running_max), do: running_max
+  def caesar([]), do: []
+  def caesar([head|tail]), do: caesar(tail)
 end
 
 # Exercise: ListsAndRecursion - 1
 IO.puts MyList.mapsum [1,2,3], &(&1 * &1)
+
 # Exercise: ListsAndRecursion - 2
 IO.puts MyList.my_max([42,18,93,53,42,59])
-#
+
+# Exercise: ListsAndRecursion - 3
+IO.puts MyList.caesar('ryvkve')
+
+IO.puts MyList.map('abc', &(&1 + 1))
+
