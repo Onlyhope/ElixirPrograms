@@ -31,7 +31,7 @@ defmodule MyList do
     between(from, to, list, [])
   end
   def between(0, 0, _, ans), do: ans
-  def between(from, to, [head|tail], ans) when from > 0 do
+  def between(from, to, [_|tail], ans) when from > 0 do
     # Continue when from > 0 and to > 0
     between(from-1, to-1, tail, ans)
   end
@@ -41,21 +41,14 @@ defmodule MyList do
   end
 end
 
-# Exercise: ListsAndRecursion - 1
-IO.puts MyList.mapsum [1,2,3], &(&1 * &1)
+defmodule Math do
+  def is_prime(x) do
+    Enum.all?(MyList.span(2, x-1), (fn (n) -> rem(x, n) > 0 end))
+  end
+end
 
-# Exercise: ListsAndRecursion - 2
-IO.puts MyList.my_max([42,18,93,53,42,59])
+IO.inspect Math.is_prime(15)
 
-# Exercise: ListsAndRecursion - 3
-IO.puts MyList.caesar('abcdef', 1)
-IO.puts MyList.caesar('abcdef', 122)
-IO.puts MyList.caesar('abcdef', 123)
 
-# Exercise: ListsAndRecursion - 4
-IO.puts MyList.span(97, 122)
-
-# Exercise: ListsAndRecursion - 5 (Mis-understood Question)
-testList = [97,98,99,100,101,102,103,104]
-IO.puts MyList.between(2, 5, testList)
-
+result = for x <- MyList.span(2, 25), do: Math.is_prime(x)
+IO.inspect result
