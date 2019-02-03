@@ -28,7 +28,7 @@ IO.inspect MyCharacter.anagram?('abc', 'bdb')
 # Exercise: StringsAndBinaries-3
 
 # Joined is actually a list with 'cat' as the head
-# Equivalent to [ ['c', 'a', 't'] | ['d', 'o', 'g']]
+# Equivalent to [ ['c', 'a', 't'] | ['d', 'o', 'g'] ]
 full = 'catdog'
 joined = [ 'cat' | 'dog' ]
 
