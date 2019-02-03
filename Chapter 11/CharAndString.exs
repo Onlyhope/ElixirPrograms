@@ -69,4 +69,5 @@ IO.puts inspect joined, charlists: :as_lists
 
 # Exercise: StringsAndBinaries-5
 IO.puts MyCharacter.center(["cat", "zebra", "elephant"])
+IO.puts MyCharacter.center(["cat", "zebra", "∂x/∂y", "elephant_train"])
 
