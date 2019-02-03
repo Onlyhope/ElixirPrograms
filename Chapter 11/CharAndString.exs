@@ -12,23 +12,38 @@ defmodule MyCharacter do
 		reversed = Enum.reverse(word2)
 		reversed == word1
 	end
-	def calculate(expr) do
+	def calculate(_) do
 		"Calculate"
 	end
 	def center(wordList) do
 		max = max_byte_size(wordList, 0)
-		# center(wordList, max, [])
+		printCenterWords(wordList, max)
+	end
+	def printCenterWords([], max), do: :ok
+	def printCenterWords([head | tail], max) do
+		centered_word = center_a_word(head, max)
+		IO.puts centered_word
+		printCenterWords(tail, max)
+	end
+	def center_a_word(word, max_size) do
+		head_length = div(max_size - String.length(word), 2)
+		tail_length = max_size - head_length - String.length(word)
+		# IO.puts "#{head_length} + #{String.length(word)} + #{tail_length} = #{max_size}"
+		x_characters(head_length," ") <> word <> x_characters(tail_length, " ")
 	end
 	def max_byte_size([], max), do: max
-	def max_byte_size([head | tail], max) when (byte_size head) > max do
-		IO.puts "max < #{byte_size head}"
-		max_byte_size(tail, byte_size head)
-	end
 	def max_byte_size([head | tail], max) do
-		IO.puts "max > #{byte_size head}"
-		center(tail, max)
+		head_length = String.length(head)
+		if head_length > max do
+			head_length = max_byte_size(tail, head_length)
+		else
+			head_length = max_byte_size(tail, max)
+		end
 	end
-
+	def x_characters(0, c), do: ""
+	def x_characters(x, c) do
+		c <> x_characters(x-1, c)
+	end
 end
 
 # Exercise: StringsAndBinaries-1
