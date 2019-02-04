@@ -44,6 +44,9 @@ defmodule MyCharacter do
 	def x_characters(x, c) do
 		c <> x_characters(x-1, c)
 	end
+	def capitalize_sentences(<<sentence,sentence_end::utf8-size(16)>>) do
+		IO.puts "#{sentence}"
+	end
 end
 
 # Exercise: StringsAndBinaries-1
@@ -64,10 +67,12 @@ joined = [ 'cat' | 'dog' ]
 IO.puts inspect full, charlists: :as_lists
 IO.puts inspect joined, charlists: :as_lists
 
-# Exercise: StringsAndBinaries-4
+# TODO - Exercise: StringsAndBinaries-4
 # IO.puts calculate('12 + 50') # 62
 
 # Exercise: StringsAndBinaries-5
 IO.puts MyCharacter.center(["cat", "zebra", "elephant"])
 IO.puts MyCharacter.center(["cat", "zebra", "∂x/∂y", "elephant_train"])
 
+# Exercise: StringsAndBinaries-6
+IO.puts capitalize_sentences("oh. a DOG. woof.")
