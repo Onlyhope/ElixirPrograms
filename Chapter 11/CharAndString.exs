@@ -19,7 +19,7 @@ defmodule MyCharacter do
 		max = max_byte_size(wordList, 0)
 		printCenterWords(wordList, max)
 	end
-	def printCenterWords([], max), do: :ok
+	def printCenterWords([], _), do: :ok
 	def printCenterWords([head | tail], max) do
 		centered_word = center_a_word(head, max)
 		IO.puts centered_word
@@ -40,12 +40,12 @@ defmodule MyCharacter do
 			head_length = max_byte_size(tail, max)
 		end
 	end
-	def x_characters(0, c), do: ""
+	def x_characters(0, _), do: ""
 	def x_characters(x, c) do
 		c <> x_characters(x-1, c)
 	end
-	def capitalize_sentences(<<sentence,sentence_end::utf8-size(16)>>) do
-		IO.puts "#{sentence}"
+	def capitalize_sentences(<<letter::utf8-size(8),rest::utf8>>) do
+		"#{letter} #{rest}"
 	end
 end
 
@@ -75,4 +75,4 @@ IO.puts MyCharacter.center(["cat", "zebra", "elephant"])
 IO.puts MyCharacter.center(["cat", "zebra", "∂x/∂y", "elephant_train"])
 
 # Exercise: StringsAndBinaries-6
-IO.puts capitalize_sentences("oh. a DOG. woof.")
+IO.puts MyCharacter.capitalize_sentences("oh. a DOG. woof.")
