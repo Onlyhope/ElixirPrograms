@@ -76,3 +76,5 @@ IO.puts MyCharacter.center(["cat", "zebra", "∂x/∂y", "elephant_train"])
 
 # Exercise: StringsAndBinaries-6
 IO.puts capitalize_sentences("oh. a DOG. woof.")
+
+# Exercise: StringsAndBinaries-7
