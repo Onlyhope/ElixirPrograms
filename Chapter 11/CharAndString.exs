@@ -47,6 +47,9 @@ defmodule MyCharacter do
 	def capitalize_sentences(<<letter::utf8-size(8),rest::utf8>>) do
 		"#{letter} #{rest}"
 	end
+	def capture_data(<<id :: bitstring-size(24), ",:", ship_to :: bitstring-size(16), ",", net_amount :: bitstring)
+		IO.puts "id: #{id}, ship_to: #{ship_to}, net_amount: #{net_amount}"
+	end
 end
 
 # Exercise: StringsAndBinaries-1
