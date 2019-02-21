@@ -22,7 +22,7 @@ defmodule WeatherHistory do
 	def for_location([ [time, target_loc, temp, rain]|tail], target_loc) do
 		[ [time, target_loc, temp, rain] | for_location(tail, target_loc) ]
 	end
-	do for_location([_|tail], target_loc) do
+	def for_location([_|tail], target_loc) do
 		for_location(tail, target_loc)
 	end
 end
@@ -30,5 +30,4 @@ end
 data = WeatherHistory.test_data()
 
 IO.inspect WeatherHistory.for_location_27(data)
-
-System.halt(0)
+IO.inspect WeatherHistory.for_location(data, 27)
