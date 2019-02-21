@@ -33,9 +33,26 @@ defmodule CalculateSalesTax do
 		}
 		taxMap[state]
 	end
+	def salesTax() do
+		%{	
+			NC: 1.085,
+			OK: 1.075,
+			TX: 1.050,
+			MA: 1.060,
+			CA: 1.095
+		}
+	end
 end
 
 IO.inspect CalculateSalesTax.readFile("sales.csv");
 CalculateSalesTax.salesTax(String.to_atom("NC"))
+
+data = CalculateSalesTax.salesTax()
+
+# Iterates through the map and look for the matching atom :NC
+for key <- [String.to_atom("NC")] do
+	%{ ^key => value} = data
+	IO.inspect value
+end
 
 System.halt(0)
