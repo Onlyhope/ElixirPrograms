@@ -49,10 +49,8 @@ CalculateSalesTax.salesTax(String.to_atom("NC"))
 
 data = CalculateSalesTax.salesTax()
 
-# Iterates through the map and look for the matching atom :NC
-for key <- [String.to_atom("NC")] do
-	%{ ^key => value} = data
-	IO.inspect value
-end
+key = String.to_atom("NC")
+%{ ^key => value } = data
+IO.inspect value
 
 System.halt(0)
