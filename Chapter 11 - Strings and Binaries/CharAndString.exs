@@ -44,9 +44,18 @@ defmodule MyCharacter do
 	def x_characters(x, c) do
 		c <> x_characters(x-1, c)
 	end
-	def capitalize_sentences(<<letter::utf8-size(8),rest::utf8>>) do
-		"#{letter} #{rest}"
+
+	def capitalize_sentences(str), do: capitalize_sentences(String.capitalize(str), <<>>)
+
+	defp capitalize_sentences(<< ". ", tail::binary >>, str) do
+		capitalize_sentences(String.capitalize(tail), str <> <<". ">>)
 	end
+
+	defp capitalize_sentences(<< head::utf8, tail::binary >>, str) do
+		capitalize_sentences(tail, str <> <<head>>)
+	end
+
+	defp capitalize_sentences(<< >>, str), do: str
 end
 
 # Exercise: StringsAndBinaries-1
@@ -76,3 +85,5 @@ IO.puts MyCharacter.center(["cat", "zebra", "∂x/∂y", "elephant_train"])
 
 # Exercise: StringsAndBinaries-6
 IO.puts MyCharacter.capitalize_sentences("oh. a DOG. woof.")
+
+System.halt(0)
