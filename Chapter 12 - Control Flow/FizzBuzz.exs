@@ -47,27 +47,3 @@ IO.inspect FizzBuzz.upto(16)
 # ControlFlow-3:
 
 file = ExceptionWrapper.ok! File.open("somefile.txt")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# System.halt(0)
