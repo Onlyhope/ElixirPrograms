@@ -18,14 +18,15 @@ defmodule CliTest do
 	end
 
 	test "sort descending orders the correct way" do
-		result = sort_into_descending_order(fake_created_at_list(["c", "a", "b"]))
-		issues = for issue <- result, do: Map.get(issue, "created_at")
-		assert issues == ~w{c b a}
+		results = sort_into_descending_order(fake_created_at_list(["c", "a", "b", "e", "d"]))
+		issues = for issue <- results, do: Map.get(issue, "created_at")
+		assert issues == ~w{e d c b a}
 	end
 
 	defp fake_created_at_list(values) do
-		for value <- values,
-		do: %{"created_at" => value, "other_data" => "xxx"}
+		for value <- values do
+			%{"created_at" => value, "other_data" => "XXX"}
+		end
 	end
 	
 end
