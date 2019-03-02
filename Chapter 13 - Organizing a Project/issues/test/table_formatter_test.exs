@@ -11,7 +11,7 @@ defmodule TableFormatterTest do
     [ c1: "r4 c1", c2: "r4 c2", c3: "r4 c3", c4: "r4 c4" ]
 	]
 
-  @headers [:c1,:c2,:c3,:c4]
+  @headers [:c1,:c2,:c4]
 
   def split_with_three_columns do
     TF.split_into_columns(@simple_test_data, @headers)

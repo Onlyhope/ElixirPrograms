@@ -6,61 +6,87 @@ defmodule Issues.TableFormatter do
   # Headers are attributes of the issues to display
   # Ex: ["number", "created_at", "title"]
 	def print_table_for_columns(rows, headers) do
-    with 
       # 1. split_into_columns, if success
       # 2. get column_widths from data_by_columns, if success
       # 3. get format by using column_widths, if success
       # 4. Follow the do-block
-      data_by_columns = split_into_columns(rows, headers),
-      column_widths = widths_of(data_by_columns)
+    with data_by_columns = split_into_columns(rows, headers),
+      column_widths = widths_of(data_by_columns),
       format = format_for(column_widths)
     do
       puts_one_line_in_columns(headers, format)
       IO.puts(separator(column_widths))
-      puts_in_columns(data_by_columns)
+      puts_in_columns(data_by_columns, format)
     end
 	end
 
-  # 
   # Outputs data_by_columns
-	def split_into_columns(row, headers) do
-		for 
+  # For each row ensure it is printable,
+  # based on the given headers
+  # Example: "number", "created_at", "title"
+  # Ensure all rows with the following headers
+  # have printable values.
+	def split_into_columns(rows, headers) do
+		for header <- headers do
+      for row <- rows do
+        printable(row[header])
+      end  
+    end
+    |> IO.inspect 
 	end
 
+  # If not binary, to_string to ensure bitstring format
 	def printable(str) when is_binary(str), do: str
 	def printable(str), do: to_string(str)
 
+  # Extract a list of widths from the columns
+  # Takes the max 
 	def widths_of(columns) do
 		for column <- columns do
 			column
-			|> map(&String.length/1) |> max
+			|> map(&String.length/1) 
+      |> max
 		end
+    |> IO.inspect
 	end
 
-	# Grabs the width of teh column by 
+	# Create the formaatting by using the max width of the column
 	def format_for(column_widths) do
-
+    map_join(
+      column_widths,
+      " | ",
+      fn(width) ->
+        "~-#{width}s"
+      end
+    ) <> "~n"
+    |> IO.inspect
 	end
 
+  # Create the separator line between headers and data
 	def separator(column_widths) do
 		map_join(
 			column_widths, "-+-",
 			fn(width) ->
 				List.duplicate("-", width) 
-			end)
+			end
+    )
+    |> IO.inspect
 	end
+
 
 	def puts_in_columns(data_by_columns, format) do
 		data_by_columns
 		|> List.zip
 		|> map(&Tuple.to_list/1)
 		|> each(&puts_one_line_in_columns(&1, format))
+    |> IO.inspect
 	end
 
 
 
 	def puts_one_line_in_columns(fields, format) do
 		:io.format(format, fields)
+    |> IO.inspect
 	end
 end
 

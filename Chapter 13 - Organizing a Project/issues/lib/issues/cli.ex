@@ -8,6 +8,8 @@ defmodule Issues.CLI do
 	table of the last _n_issues in a github project
 	"""
 
+  import Issues.TableFormatter
+
 	def run(argv) do
 		argv
 		|> parse_args
@@ -25,7 +27,6 @@ defmodule Issues.CLI do
 		|> decode_response()
 		|> sort_into_descending_order()
     |> last(count)
-    # |> format_issues_into_table()
     |> print_table_for_columns(["number", "created_at", "title"])
 	end
 
