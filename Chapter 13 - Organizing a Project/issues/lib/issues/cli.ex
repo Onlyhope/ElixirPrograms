@@ -25,6 +25,7 @@ defmodule Issues.CLI do
 		|> decode_response()
 		|> sort_into_descending_order()
     |> last(count)
+    |> format_issues_into_table()
 	end
 
   def decode_response({:ok, body}), do: body
@@ -45,6 +46,27 @@ defmodule Issues.CLI do
     list
     |> Enum.take(count)
     |> Enum.reverse
+  end
+
+  def format_issues_into_table(issues) do
+    """
+    #    | created_at           | title
+    #{parse_issues(issues)}
+    """
+    |> IO.puts
+  end
+
+  def parse_issues(issues) do
+    # Parse each list in issues
+    issues
+    |> Enum.map(&transform_data/1)
+    |> Enum.join("\n")
+  end
+
+  defp transform_data(issue) do
+    "#{Map.get(issue, "number")}"
+    <> " | #{Map.get(issue, "created_at")}"
+    <> " | #{Map.get(issue, "title")}"
   end
 
 	@doc """
