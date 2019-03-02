@@ -25,7 +25,8 @@ defmodule Issues.CLI do
 		|> decode_response()
 		|> sort_into_descending_order()
     |> last(count)
-    |> format_issues_into_table()
+    # |> format_issues_into_table()
+    |> print_table_for_columns(["number", "created_at", "title"])
 	end
 
   def decode_response({:ok, body}), do: body
@@ -48,6 +49,7 @@ defmodule Issues.CLI do
     |> Enum.reverse
   end
 
+  # Naive implementation of Format_Issues_Into_Table
   def format_issues_into_table(issues) do
     """
     #    | created_at           | title
