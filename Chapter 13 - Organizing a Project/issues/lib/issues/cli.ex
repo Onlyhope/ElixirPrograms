@@ -1,4 +1,6 @@
 defmodule Issues.CLI do
+
+  require Logger
 	
 	@default_count 4
 
@@ -56,7 +58,7 @@ defmodule Issues.CLI do
     #    | created_at           | title
     #{parse_issues(issues)}
     """
-    |> IO.puts
+    |> Logger.info
   end
 
   def parse_issues(issues) do

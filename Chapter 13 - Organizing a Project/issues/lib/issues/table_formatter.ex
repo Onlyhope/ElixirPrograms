@@ -2,9 +2,12 @@ defmodule Issues.TableFormatter do
 
   import Enum, only: [each: 2, map: 2, map_join: 3, max: 1]
 	
-  # Rows are the list of issues
-  # Headers are attributes of the issues to display
-  # Ex: ["number", "created_at", "title"]
+  @moduledoc """
+  Rows are the list of issues
+  Headers are attributes of the issues to display
+  Ex: ["number", "created_at", "title"]
+  """
+
 	def print_table_for_columns(rows, headers) do
       # 1. split_into_columns, if success
       # 2. get column_widths from data_by_columns, if success
@@ -20,12 +23,14 @@ defmodule Issues.TableFormatter do
     end
 	end
 
-  # Outputs data_by_columns
-  # For each row ensure it is printable,
-  # based on the given headers
-  # Example: "number", "created_at", "title"
-  # Ensure all rows with the following headers
-  # have printable values.
+  @moduledoc """
+  Outputs data_by_columns
+  For each row ensure it is printable,
+  based on the given headers
+  Example: "number", "created_at", "title"
+  Ensure all rows with the following headers
+  have printable values.
+  """
 	def split_into_columns(rows, headers) do
 		for header <- headers do
       for row <- rows do
@@ -35,12 +40,16 @@ defmodule Issues.TableFormatter do
     |> IO.inspect 
 	end
 
-  # If not binary, to_string to ensure bitstring format
+  @moduledoc """
+  If not binary, to_string to ensure bitstring format
+  """
 	def printable(str) when is_binary(str), do: str
 	def printable(str), do: to_string(str)
 
-  # Extract a list of widths from the columns
-  # Takes the max 
+  @moduledoc """
+  Extract a list of widths from the columns
+  Takes the max   
+  """
 	def widths_of(columns) do
 		for column <- columns do
 			column
@@ -49,7 +58,9 @@ defmodule Issues.TableFormatter do
 		end
 	end
 
-	# Create the formaatting by using the max width of the column
+  @moduledoc """
+  Create the formaatting by using the max width of the column
+  """
 	def format_for(column_widths) do
     map_join(
       column_widths,
@@ -60,8 +71,10 @@ defmodule Issues.TableFormatter do
     ) <> "~n"
 	end
 
-  # Create the separator line between headers and data
-	def separator(column_widths) do
+  @moduledoc """
+  Create the separator line between headers and data
+  """
+  def separator(column_widths) do
 		map_join(
 			column_widths, "-+-",
 			fn(width) ->
