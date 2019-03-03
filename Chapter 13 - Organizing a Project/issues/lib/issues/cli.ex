@@ -10,7 +10,7 @@ defmodule Issues.CLI do
 
   import Issues.TableFormatter
 
-	def run(argv) do
+	def main(argv) do
 		argv
 		|> parse_args
 		|> process
