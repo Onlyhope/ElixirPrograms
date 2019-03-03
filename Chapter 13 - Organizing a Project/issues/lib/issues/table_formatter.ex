@@ -47,7 +47,6 @@ defmodule Issues.TableFormatter do
 			|> map(&String.length/1) 
       |> max
 		end
-    |> IO.inspect
 	end
 
 	# Create the formaatting by using the max width of the column
@@ -59,7 +58,6 @@ defmodule Issues.TableFormatter do
         "~-#{width}s"
       end
     ) <> "~n"
-    |> IO.inspect
 	end
 
   # Create the separator line between headers and data
@@ -70,7 +68,6 @@ defmodule Issues.TableFormatter do
 				List.duplicate("-", width) 
 			end
     )
-    |> IO.inspect
 	end
 
 
@@ -79,14 +76,12 @@ defmodule Issues.TableFormatter do
 		|> List.zip
 		|> map(&Tuple.to_list/1)
 		|> each(&puts_one_line_in_columns(&1, format))
-    |> IO.inspect
 	end
 
 
 
 	def puts_one_line_in_columns(fields, format) do
 		:io.format(format, fields)
-    |> IO.inspect
 	end
 end
 
