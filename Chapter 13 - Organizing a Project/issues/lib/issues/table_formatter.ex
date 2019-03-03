@@ -2,7 +2,7 @@ defmodule Issues.TableFormatter do
 
   import Enum, only: [each: 2, map: 2, map_join: 3, max: 1]
 	
-  @moduledoc """
+  @doc """
   Rows are the list of issues
   Headers are attributes of the issues to display
   Ex: ["number", "created_at", "title"]
@@ -23,7 +23,7 @@ defmodule Issues.TableFormatter do
     end
 	end
 
-  @moduledoc """
+  @doc """
   Outputs data_by_columns
   For each row ensure it is printable,
   based on the given headers
@@ -40,13 +40,13 @@ defmodule Issues.TableFormatter do
     |> IO.inspect 
 	end
 
-  @moduledoc """
+  @doc """
   If not binary, to_string to ensure bitstring format
   """
 	def printable(str) when is_binary(str), do: str
 	def printable(str), do: to_string(str)
 
-  @moduledoc """
+  @doc """
   Extract a list of widths from the columns
   Takes the max   
   """
@@ -58,7 +58,7 @@ defmodule Issues.TableFormatter do
 		end
 	end
 
-  @moduledoc """
+  @doc """
   Create the formaatting by using the max width of the column
   """
 	def format_for(column_widths) do
@@ -71,7 +71,7 @@ defmodule Issues.TableFormatter do
     ) <> "~n"
 	end
 
-  @moduledoc """
+  @doc """
   Create the separator line between headers and data
   """
   def separator(column_widths) do
