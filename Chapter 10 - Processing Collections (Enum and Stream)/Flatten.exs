@@ -17,10 +17,20 @@ defmodule MyList do
 
 end
 
-testList = [[1,10,[2]],[3],[[[4]]]]
+testList1 = [[1,10,[2]],[3],[[[4]]]]
+IO.puts "Input:"
+IO.inspect testList1
 
-IO.inspect MyList.flatten(testList)
+IO.puts "Output:"
+IO.inspect MyList.flatten(testList1)
 
-list = [1,[2,3,[4,5],6],7,[8],[9,[10],11]]
+# Doesn't unroll the following case: [[[3]]]
+testList2 = [[[3]]]
+IO.puts "Input:"
+IO.inspect testList2
+
+IO.puts "Output:"
+IO.inspect MyList.flatten(testList2)
+
 
 # IO.inspect MyList.flatten(list)
