@@ -13,7 +13,7 @@ defmodule MyList do
 
 end
 
-# The understanding is understanding that if 
+# The key insight is understanding that if 
 # an element is a list, it is the same sub-problem
 # as the larger one and you can call flatten on it again
 
