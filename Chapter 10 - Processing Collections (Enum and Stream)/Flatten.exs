@@ -13,6 +13,16 @@ defmodule MyList do
 
 end
 
+# The understanding is understanding that if 
+# an element is a list, it is the same sub-problem
+# as the larger one and you can call flatten on it again
+
+# My initial results were 1-level of flatten.
+# Then I realize if the element is a list, it's the
+# same sub-problem. 
+# sub_problem_nswer ++ the rest of the list.
+
+
 testList1 = [[1,10,[2]],[3],[[[4]]]]
 IO.puts "Input:"
 IO.inspect testList1
