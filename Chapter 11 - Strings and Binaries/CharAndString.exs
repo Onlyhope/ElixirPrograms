@@ -76,7 +76,7 @@ joined = [ 'cat' | 'dog' ]
 IO.puts inspect full, charlists: :as_lists
 IO.puts inspect joined, charlists: :as_lists
 
-# TODO - Exercise: StringsAndBinaries-4
+# TODO - Exercise: StringsAndBinaries-4 - See Calculate.exs
 # IO.puts calculate('12 + 50') # 62
 
 # Exercise: StringsAndBinaries-5
