@@ -1,26 +1,39 @@
 defmodule MyList do
+
 	def flatten(list), do: flatten(list, [])
 	def flatten([], answer), do: answer
+
 	def flatten([head|tail], answer) when is_list(head) do
-		IO.puts "#{head} is list"
-		flatten(head, tail, answer)
+		flatten(tail, answer ++ flatten(head))
 	end
+
 	def flatten([head|tail], answer) do
 		flatten(tail, answer ++ [head])
-	end
-	def flatten([], left_over, answer) do
-		flatten(left_over, answer)
-	end
-	def flatten([head|tail], left_over, answer) do
-		flatten(tail, left_over, answer ++ [head])
 	end
 
 end
 
-testList = [[1,10,[2]],[3],[[[4]]]]
+# The key insight is understanding that if 
+# an element is a list, it is the same sub-problem
+# as the larger one and you can call flatten on it again
 
-IO.inspect MyList.flatten(testList)
+# My initial results were 1-level of flatten.
+# Then I realize if the element is a list, it's the
+# same sub-problem. 
+# sub_problem_nswer ++ the rest of the list.
 
-list = [1,[2,3,[4,5],6],7,[8],[9,[10],11]]
 
-# IO.inspect MyList.flatten(list)
+testList1 = [[1,10,[2]],[3],[[[4]]]]
+IO.puts "Input:"
+IO.inspect testList1
+
+IO.puts "Output:"
+IO.inspect MyList.flatten(testList1)
+
+# To solve for the unrolling case=
+testList2 = [[[3]]]
+IO.puts "Input:"
+IO.inspect testList2
+
+IO.puts "Output:"
+IO.inspect MyList.flatten(testList2)
