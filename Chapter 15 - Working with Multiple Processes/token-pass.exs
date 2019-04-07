@@ -1,5 +1,9 @@
 # Exercise: WorkingWithMultipleProcesses-2
 defmodule TokenPass do
+
+	@moduledoc """
+	This program will send and receive token in an infinite loop! 
+	"""
 	
 	def receive_token do
 		receive do
