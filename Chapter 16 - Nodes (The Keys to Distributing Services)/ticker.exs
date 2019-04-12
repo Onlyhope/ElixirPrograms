@@ -26,12 +26,16 @@ defmodule Ticker do
 				generator([pid|clients])
 			after
 				@interval ->
-					IO.puts "tick"
+					# current_time = :os.system_time(:millisecond)
+					IO.puts "#{inspect :os.system_time(:millisecond)} tick"
 					
 					# Sends the message tick to all of the clients
 					Enum.each(clients, fn client ->
 						send(client, {:tick})
-					end)	
+					end)
+
+					# Re-cursively call generator to tick again
+					generator(clients)	
 		end
 	end
 end
@@ -55,3 +59,24 @@ defmodule Client do
 	end
 
 end
+
+# Exercises: Nodes-1
+
+# Window 1: iex --sname node_1
+# Window 2: iex --sname node_2
+# Window 2: Node.connect :"node_1"
+
+fun = fn -> IO.puts(Enum.join(File.ls!, ",")) end
+
+# Exercises: Nodes-2
+# When I introduced the interval server, I said it sent a tick
+# "about every 2 seconds." But in the receive loop, it has an
+# explicit timeout of 2,000 ms. Why did I say "about" when it
+# looks as if the time should be pretty accurate?
+
+# Because there's an interval between calling itself and sending
+# each registered client a message. (Not satisfied with this answer)
+
+# Exercises: Nodes-3
+
+
