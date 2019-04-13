@@ -8,7 +8,7 @@ defmodule Ticker do
 		the PID of this server under the name :ticker.
 	"""
 	def start do
-		pid = spawn(__MODULE__, :generator, [[]])
+		pid = spawn(__MODULE__, :generator, [[],[]])
 		:global.register_name(@name, pid)
 	end
 
@@ -19,24 +19,34 @@ defmodule Ticker do
 		send(:global.whereis_name(@name), {:register, client_pid})
 	end
 
-	def generator(clients) do
+	@doc """
+		Sends out a tick to all its client every 2 seconds.
+		Also register clients to the list of processes
+	"""
+	def generator([head|tail], processed_clients) do
 		receive do
 			{:register, pid} ->
 				IO.puts "Registering #{inspect(pid)}"
-				generator([pid|clients])
+				generator([pid|tail], processed_clients)
 			after
 				@interval ->
 					# current_time = :os.system_time(:millisecond)
 					IO.puts "#{inspect :os.system_time(:millisecond)} tick"
 					
 					# Sends the message tick to all of the clients
-					Enum.each(clients, fn client ->
-						send(client, {:tick})
-					end)
+					# Enum.each(clients, fn client ->
+					# 	send(client, {:tick})
+					# end)
+
+					send(head, {:tick})
 
 					# Re-cursively call generator to tick again
-					generator(clients)	
+					generator(tail, processed_clients + [head])	
 		end
+	end
+
+	def generator([], processed_clients) do
+		generator(processed_clients, [])
 	end
 end
 
@@ -78,5 +88,7 @@ fun = fn -> IO.puts(Enum.join(File.ls!, ",")) end
 # each registered client a message. (Not satisfied with this answer)
 
 # Exercises: Nodes-3
+
+Ticker.start
 
 
