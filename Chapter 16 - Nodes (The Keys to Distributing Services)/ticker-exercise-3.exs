@@ -8,7 +8,7 @@ defmodule Ticker do
 		the PID of this server under the name :ticker.
 	"""
 	def start do
-		pid = spawn(__MODULE__, :generator, [[]])
+		pid = spawn(__MODULE__, :generator, [[],[]])
 		:global.register_name(@name, pid)
 	end
 
@@ -19,30 +19,49 @@ defmodule Ticker do
 		send(:global.whereis_name(@name), {:register, client_pid})
 	end
 
+	def generator([], []) do
+		receive do
+			{:register, pid} ->
+				IO.puts "Registering #{inspect(pid)}"
+				generator([pid], [])
+			after
+				@interval ->
+					IO.puts "tick"
+
+					generator([], [])
+		end
+	end
+
 	@doc """
 		Sends out a tick to all its client every 2 seconds.
 		Also register clients to the list of processes
 	"""
-	def generator(clients) do
+	def generator([head|tail], processed_clients) do
 		receive do
 			{:register, pid} ->
 				IO.puts "Registering #{inspect(pid)}"
-				generator([pid|clients])
+				IO.puts "New list: #{inspect(tail ++ [pid])} processed_clients: #{inspect([head] ++ processed_clients)}"
+				generator([head] ++ tail ++ [pid], processed_clients)
 			after
 				@interval ->
 					# current_time = :os.system_time(:millisecond)
 					IO.puts "tick"
 					
 					# Sends the message tick to all of the clients
-					Enum.each(clients, fn client ->
-						send(client, {:tick})
-					end)
+					# Enum.each(clients, fn client ->
+					# 	send(client, {:tick})
+					# end)
+
+					send(head, {:tick})
 
 					# Re-cursively call generator to tick again
-					generator(clients)	
+					generator(tail, processed_clients ++ [head])	
 		end
 	end
 
+	def generator([], processed_clients) do
+		generator(processed_clients, [])
+	end
 end
 
 defmodule Client do
@@ -81,6 +100,12 @@ fun = fn -> IO.puts(Enum.join(File.ls!, ",")) end
 
 # Because there's an interval between calling itself and sending
 # each registered client a message. (Not satisfied with this answer)
+
+# Exercises: Nodes-3
+
+Ticker.start
+Client.start
+Client.start
 
 
 
