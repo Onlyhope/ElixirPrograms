@@ -19,6 +19,19 @@ defmodule Ticker do
 		send(:global.whereis_name(@name), {:register, client_pid})
 	end
 
+	def generator([], []) do
+		receive do
+			{:register, pid} ->
+				IO.puts "Registering #{inspect(pid)}"
+				generator([pid], [])
+			after
+				@interval ->
+					IO.puts "tick"
+
+					generator([], [])
+		end
+	end
+
 	@doc """
 		Sends out a tick to all its client every 2 seconds.
 		Also register clients to the list of processes
@@ -27,11 +40,12 @@ defmodule Ticker do
 		receive do
 			{:register, pid} ->
 				IO.puts "Registering #{inspect(pid)}"
-				generator([pid|tail], processed_clients)
+				IO.puts "New list: #{inspect(tail ++ [pid])} processed_clients: #{inspect([head] ++ processed_clients)}"
+				generator([head] ++ tail ++ [pid], processed_clients)
 			after
 				@interval ->
 					# current_time = :os.system_time(:millisecond)
-					IO.puts "#{inspect :os.system_time(:millisecond)} tick"
+					IO.puts "tick"
 					
 					# Sends the message tick to all of the clients
 					# Enum.each(clients, fn client ->
@@ -41,7 +55,7 @@ defmodule Ticker do
 					send(head, {:tick})
 
 					# Re-cursively call generator to tick again
-					generator(tail, processed_clients + [head])	
+					generator(tail, processed_clients ++ [head])	
 		end
 	end
 
@@ -63,7 +77,7 @@ defmodule Client do
 	def receiver do
 		receive do
 			{:tick} ->
-				IO.puts "tock in client"
+				IO.puts "#{inspect self()} tock in client"
 				receiver()
 		end
 	end
