@@ -104,5 +104,7 @@ fun = fn -> IO.puts(Enum.join(File.ls!, ",")) end
 # Exercises: Nodes-3
 
 Ticker.start
+Client.start
+Client.start
 
 
