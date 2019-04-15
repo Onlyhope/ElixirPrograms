@@ -11,7 +11,7 @@ defmodule FibSolver do
 		send(scheduler, {:ready, self()})
 	
 		receive do
-			{:fib, n, client } ->
+			{:fib, n, client} ->
 				# Send client the answer from fib_calc(n)
 				send(client, {:answer, n, fib_calc(n), self()})
 				# Recursively call fib(scheduler) to restart it

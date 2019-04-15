@@ -3,7 +3,7 @@ defmodule Scheduler do
 	import FibSolver
 	
 	@doc """
-		
+		to_calculate -> List of values to calculate
 	"""
 	def run(num_processes, module, func, to_calculate) do
 		

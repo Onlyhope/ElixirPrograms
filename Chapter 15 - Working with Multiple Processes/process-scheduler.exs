@@ -6,7 +6,8 @@
 
 defmodule Scheduler do
 
-	import FibSolver
+	# import FibSolver
+	import ArbitraryFunction
 	
 	@doc """
 		
@@ -32,7 +33,7 @@ defmodule Scheduler do
 			{:ready, pid} when queue != [] ->
 				# Receive ready status and there is work on the queue
 				[ next | tail ] = queue
-				send pid, {:fib, next, self()}
+				send pid, {:main, next, self()}
 				schedule_processes(processes, tail, results)
 			{:ready, pid} when queue == [] ->
 				# Receive ready status but queue is empty, send shut-down
@@ -53,12 +54,13 @@ defmodule Scheduler do
 
 end
 
-to_process = List.duplicate(37,20) # %%%%%%%%%%%%%%%%%%%%
+# to_process = List.duplicate(37,20) # %%%%%%%%%%%%%%%%%%%%
+to_process = Enum.to_list(1..10)
 
 Enum.each 1..10, fn num_processes ->
 	{time, result} = :timer.tc(
 		Scheduler, :run,
-		[num_processes, FibSolver, :fib, to_process]
+		[num_processes, ArbitraryFunction, :main, to_process]
 	)
 
 	if num_processes == 1 do
