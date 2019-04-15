@@ -1,3 +1,9 @@
+# Exercise: WorkingWithMultipleProcesses-9
+# Take this scheduler code and update it to let you run a function that finds the number
+# of times the word "cat" appears in each file in a given directory. Run one server process
+# per file. The function File.Is! returns the names of files in a directory, and File.read!
+# reads the contents of a file as a binary. Can you write it as a more generalized scheduler?
+
 defmodule Scheduler do
 
 	import FibSolver
@@ -62,10 +68,7 @@ Enum.each 1..10, fn num_processes ->
 		:io.format "~2B    ~.2f~n", [num_processes, time/1000000.0]
 	end
 
-# Exercise: WorkingWithMultipleProcesses-8
-# Run the Fibonacci code on your machine. Do you get comparable timings?
-# If your machine has multiple cores and/or processors, do you see improvements in the
-# timing as we increase the application's concurrency?
+
 
 
 
