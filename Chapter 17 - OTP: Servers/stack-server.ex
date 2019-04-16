@@ -6,12 +6,16 @@ defmodule StackServer do
 		{:ok, initial_content}
 	end
 
-	def handle_call(:pop, _from, current_content) do
-		{:reply, current_content, nil}
+	def handle_call(:pop, _from, []) do
+		{:reply, [], []}
+	end
+
+	def handle_call(:pop, _from, [head|tail]) do
+		{:reply, head, tail}
 	end
 
 	def handle_cast({:push, content}, current_content) do
-		[content] ++ current_content
+		{:noreply, [content] ++ current_content}
 	end
 
 end
