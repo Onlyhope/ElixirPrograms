@@ -14,5 +14,13 @@ defmodule Sequence.Server do
 		{:reply, new_number, new_number}
 	end
 
+	def handle_cast({:increment_number, delta}, current_number) do
+		{:noreply, current_number + delta}
+	end
 end
 
+# {:ok, pid} = GenServer.start_link(Sequence.Server, 100, [debug: [:trace, :statistics]])
+# :sys.statistics(pid, :get)
+# :sys.trace(pid, true)
+# :sys.trace(pid, false)
+# :sys.get_status(pid)
