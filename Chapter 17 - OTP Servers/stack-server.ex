@@ -7,17 +7,23 @@ defmodule StackServer do
 	end
 
 	def handle_call(:pop, _from, []) do
-		IO.puts "From: #{inspect _from}"
-		{:reply, [], []}
+		{:reply, [], []}  #{:reply, result, new_state}
 	end
 
 	def handle_call(:pop, _from, [head|tail]) do
-		IO.puts "From: #{inspect _from}"
-		{:reply, head, tail}
+		{:reply, head, tail} #{:reply, result, new_state}
 	end
 
 	def handle_cast({:push, content}, current_content) do
-		{:noreply, [content] ++ current_content}
+		{:noreply, [content] ++ current_content} #{:noreply, new_state}
+		# Can also return {:stop, reason, new_state}
 	end
+
+	# handle_call(request, from, state)
+	# handle_cast(request, state)
+	# handle_info(info, state)
+	# terminate(reason, state)
+	# code_change(from_version, state, extra)
+	# format_status(reason, [pdict, state])
 
 end
