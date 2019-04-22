@@ -1,0 +1,865 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: Bundle Profile API
+  description: MC product bundle profile
+  x-artifactId: bundle-profile
+  x-test-on-environment:
+    environment: SANDBOX
+host: 'api.mastercard.com'
+schemes:
+  - https
+tags:
+  - name: bundle profile
+    description: Bundle Profile API
+paths:
+  '/bundle/profile/v1/users':
+    post:
+      tags:
+        - bundle profile
+      summary: Create Profile
+      description: >-
+        Create Profile user and associated product service(s) consents and card
+        account(s)
+      operationId: createUser
+      x-action: createUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: x-client-correlation-id
+          in: header
+          description: Client-defined correlation ID
+          required: false
+          type: string
+        - in: body
+          name: body
+          description: Bundle Profile body
+          required: true
+          schema:
+            $ref: '#/definitions/BundleUser'
+      responses:
+        '200':
+          description: Create resource with messages
+          schema:
+            $ref: '#/definitions/BundleUserResponse'
+        '201':
+          description: Successful create resource
+          schema:
+            $ref: '#/definitions/BundleUserResponse'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
+      x-testable: false
+      x-samples:
+        - name: create_user_valid
+          request:
+            application/json: |-
+              {
+                 "x-client-correlation-id":"58e0a7d7-eebc-11d8-9669-0800200c9a66",
+                 "data":{
+                    "user":{
+                       "addresses":[
+                          {
+                             "country":"US",
+                             "locality":"O'Fallon",
+                             "postalCode":"63366",
+                             "primary":true,
+                             "region":"MO",
+                             "streetAddress":"123 Main St.",
+                             "type":"home"
+                          }
+                       ],
+                       "emails":[
+                          {
+                             "primary":true,
+                             "type":"home",
+                             "value":"sally.cardholder@mail.com"
+                          }
+                       ],
+                       "locale":"en-US",
+                       "name":{
+                          "familyName":"Cardholder",
+                          "formatted":"Sally Cardholder",
+                          "givenName":"Sally"
+                       },
+                       "preferredLanguage":"en",
+                       "userId":"user123-partnerBank"
+                    },
+                    "products" : [
+                       {
+                          "product": "benefits",
+                          "accounts": [
+                             {
+                                "pan": "5000000000000000",
+                                "nameOnCard": "SALLY CARDHOLDER",
+                                "cardExpiryDate": "02/2024"
+                             }
+                          ]
+                       }
+                    ]
+                 }
+              }
+          response:
+            application/json: |-
+              {
+                 "data": {
+                    "user": {
+                       "userId":"user123-partnerBank"
+                    },
+                    "products" : [
+                       {
+                          "product": "benefits"
+                       }
+                    ]
+                 }
+              }
+  '/bundle/profile/v1/users/{userId}':
+    get:
+      tags:
+        - bundle profile
+      summary: Find User by Id
+      description: >-
+        Returns a Users on the basis of provided id as path param
+        (https://tools.ietf.org/html/draft-ietf-scim-api-19#section-3.4.2.1)
+      operationId: readUser
+      x-action: readUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: x-client-correlation-id
+          in: header
+          description: Client-defined correlation ID
+          required: false
+          type: string
+        - name: userId
+          in: path
+          description: User identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Read resource with messages
+          schema:
+            $ref: '#/definitions/BundleUserResponse'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
+      x-testable: false
+    put:
+      tags:
+        - bundle profile
+      summary: Update Profile
+      description: >-
+        Update Profile user and associated product service(s) consents and card
+        account(s)
+      operationId: updateUser
+      x-action: updateUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: x-client-correlation-id
+          in: header
+          description: Client-defined correlation ID
+          required: false
+          type: string
+        - name: userId
+          in: path
+          description: User identifier
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Bundle Profile body
+          required: true
+          schema:
+            $ref: '#/definitions/BundleUser'
+      responses:
+        '200':
+          description: Update resource with messages
+          schema:
+            $ref: '#/definitions/BundleUserResponse'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
+      x-testable: false
+    delete:
+      tags:
+        - bundle profile
+      summary: Delete Profile
+      description: Delete Profile user and associated product service(s) card account(s)
+      operationId: deleteUser
+      x-action: deleteUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: x-client-correlation-id
+          in: header
+          description: Client-defined correlation ID
+          required: false
+          type: string
+        - name: userId
+          in: path
+          description: User identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Delete resource with messages
+          schema:
+            $ref: '#/definitions/BundleUserResponse'
+        '204':
+          description: Successful delete resource
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
+      x-testable: false
+  '/bundle/profile/v1/users/{userId}/products/{product}/consents':
+    get:
+      tags:
+        - bundle profile
+      summary: Find Consent by Id and product
+      description: >-
+        Returns a Consent on the basis of provided id, product as path params
+        (https://tools.ietf.org/html/draft-ietf-scim-api-19#section-3.4.2.1)
+      operationId: readConsent
+      x-action: readConsent
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: x-client-correlation-id
+          in: header
+          description: Client-defined correlation ID
+          required: false
+          type: string
+        - name: userId
+          in: path
+          description: User identifier
+          required: true
+          type: string
+        - name: product
+          in: path
+          description: product identifier
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Read resource with messages
+          schema:
+            $ref: '#/definitions/BundleUserResponse'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
+      x-testable: false
+  '/bundle/profile/v1/users/{userId}/patch':
+    post:
+      tags:
+        - bundle profile
+      summary: Partially Update Profile
+      description: >-
+        Partial updates of Profile user and associated product service(s) consents and card
+        account(s)
+      operationId: patchUser
+      x-action: patchUser
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: x-client-correlation-id
+          in: header
+          description: Client-defined correlation ID
+          required: false
+          type: string
+        - name: userId
+          in: path
+          description: User identifier
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Bundle Profile body
+          required: true
+          schema:
+            $ref: '#/definitions/BundleUserPatch'
+      responses:
+        '200':
+          description: Update resource with messages
+          schema:
+            $ref: '#/definitions/BundleUserResponse'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Errors'
+      x-testable: false
+definitions:
+  BundleUser:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          user:
+            $ref: '#/definitions/User'
+          products:
+            type: array
+            items:
+              $ref: '#/definitions/UserProduct'
+      encryptedData:
+        $ref: '#/definitions/DataEncrypt'
+  BundleUserResponse:
+    type: object
+    properties:
+      data:
+        type: object
+        properties:
+          user:
+            $ref: '#/definitions/User'
+          products:
+            type: array
+            items:
+              $ref: '#/definitions/UserProductResponse'
+      encryptedData:
+        $ref: '#/definitions/DataEncrypt'
+      Errors:
+        properties:
+          Error:
+            type: array
+            items:
+              $ref: '#/definitions/Error'
+  BundleUserPatch:
+    type: object
+    properties:
+      patch:
+        type: array
+        items:
+          $ref: "#/definitions/PatchDocument"
+  PatchDocument:
+    description: A JSONPatch document as defined by RFC 6902
+    required:
+      - "op"
+      - "path"
+    properties:
+      op:
+        type: string
+        description: The operation to be performed
+        enum:
+          - "add"
+          - "remove"
+          - "replace"
+          - "move"
+          - "copy"
+          - "test"
+      path:
+        type: string
+        description: JSONPath
+      from:
+        type: string
+        description: A string containing a JSON Pointer value.
+      value:
+        type: object
+        description: The value to be used within the operations.
+  DataEncrypt:
+    type: object
+    properties:
+      encryptedKey:
+        type: string
+        example: A1B2C3D4E5F6112233445566
+      publicKeyFingerprint:
+        type: string
+        example: 4c4ead5927f0df8117f178eea9308daa58e27c2b
+      oaepHashingAlgorithm:
+        type: string
+        example: SHA512
+      encryptedPath:
+        type: array
+        items:
+          $ref: '#/definitions/DataEncryptItem'
+  DataEncryptItem:
+    type: object
+    properties:
+      dataPath:
+        type: string
+        example: $.data
+      dataValue:
+        type: string
+        example: 4545433044323232363739304532433610DE1D1461475BEB6D815F31764DDC20298BD779FBE37EE5AB3CBDA9F9825E1DDE321469537FE461E824AA55BA67BF6A
+  UserProduct:
+    type: object
+    required:
+     - product
+    properties:
+      product:
+        type: string
+        example: benefits
+      consents:
+        type: array
+        items:
+          $ref: '#/definitions/Consent'
+      accounts:
+        type: array
+        items:
+          $ref: '#/definitions/Account'
+      object:
+        type: object
+        description: PWR - bankCustomerNumber, bankProductCode, programIdentifier, customerUserDefinedFields
+  UserProductResponse:
+    type: object
+    properties:
+      product:
+        type: string
+        example: benefits
+      object:
+        type: object
+      consents:
+        type: array
+        items:
+          $ref: '#/definitions/UserConsentResponse'
+  UserConsentResponse:
+    type: object
+    properties:
+      uuid:
+        type: string
+        example: d3459481-fb1c-48bb-8685-40eb629e2ae1
+      currentVersion:
+        type: string
+        example: 1.5
+      agreed:
+        type: boolean
+        example: true
+  Consent:
+    type: object
+    properties:
+      uuid:
+        description: "uuid of consent"
+        type: string
+        example: d3459481-fb1c-48bb-8685-40eb629e2ae1
+      useCategoryCode:
+        description: "The use category code of consent"
+        type: string
+        example: "ph"
+      serviceCode:
+        description: "Service code of consent"
+        type: string
+        example: "pc22"
+      serviceFunctionCode:
+        description: "service function code of consent"
+        type: string
+        example: "pc-reg"
+      country:
+        description: "Country of user"
+        type: string
+        example: "US"
+      language:
+        description: "Indicates the User’s preferred written or spoken language. Generally used for selecting a localized user interface; e.g., 'en_US' specifies the language English and country US."
+        type: string
+        example: en
+      consentedDate:
+        type: string
+        format: "yyyy-mm-ddThh:mm:ss.nnnnnn+|-hh:mm"
+        description: "ISO 8601 format of Datetime with timezone (extended notation) (E8601DZw.d) (yyyy-mm-ddThh:mm:ss.nnnnnn+|-hh:mm)."
+        example: '2018-06-19T12:30:42.307+0000'
+      agreed:
+        description: "Is consent accepted by the user, by default false"
+        type: boolean
+        example: true
+      useCategoryValue:
+        type: string
+        example: acceptPersonalizedOffersEmail
+        description: "Data Processor Consent Category Short Description."
+  Account:
+    type: object
+    properties:
+      ica:
+        type: integer
+        example: '12594'
+        description: "Member ICA code"
+      pan:
+        description: "16 digit account number/credit card number"
+        type: string
+        example: '5000000000000000'
+      accountType:
+        description: "The type of account"
+        type: string
+        example: SingleMember
+      productType:
+        description: "The type of product"
+        type: string
+        example: Black
+      uuid:
+        description: "32 character unique identifier"
+        type: string
+        example: "d3459481-fb1c-48bb-8685-40eb629e2ae1"
+      par:
+        description: "payment account reference"
+        type: string
+        example: q1hjz28rka1ebl470g9xyg90r5d3e
+      nameOnCard:
+        description: "The full name which is printed on the credit card"
+        type: string
+        example: 'SALLY CARDHOLDER'
+      cardExpiryDate:
+        description: "Expiration date which is printed on the credit card"
+        type: string
+        example: "02/2024"
+      cvcCode:
+        description: "CVC code printed on the back of the credit card"
+        type: string
+        example: '999'
+      brand:
+        description: "Brand of credit card"
+        type: string
+        example: Mastercard
+      productLine:
+        description: "The product line which this credit card belongs to"
+        type: string
+      primary:
+        description: "A Boolean value indicating the 'primary' or preferred account. The primary attribute value 'true' must appear no more than once."
+        type: boolean
+        example: true
+      cardAlias:
+        description: "A given alias for this credit card"
+        type: string
+        example: "d3459481-fb1c-48bb-8685-40eb629e2ae1"
+      object:
+        type: object
+        description: "PWR - accountStatusCode, promoCode, and accountUserDefinedFields"
+      last4Pan:
+        type: integer
+        example: '1234'
+        readOnly: true
+  Errors:
+    type: object
+    properties:
+      Errors:
+        type: object
+        properties:
+          Error:
+            type: array
+            items:
+              $ref: '#/definitions/Error'
+  Error:
+    type: object
+    properties:
+      Source:
+        type: string
+        example: profile
+        readOnly: true
+      ReasonCode:
+        type: string
+        example: INVALID_JSON
+        readOnly: true
+      Description:
+        type: string
+        example: Invalid JSON in request
+        readOnly: true
+      Recoverable:
+        type: boolean
+        example: true
+        readOnly: true
+      Details:
+        type: string
+        example: Invalid JSON in request
+        readOnly: true
+  User:
+    type: object
+    properties:
+      active:
+        type: boolean
+        description: "A Boolean value indicating the User's administrative status"
+        example: false
+      addresses:
+        type: array
+        items:
+          $ref: '#/definitions/Address'
+      displayName:
+        description: "The name of the User, suitable for display to end-users. The name should be the full name of the User being described, if known."
+        example: "Patrick Star"
+        type: string
+      emails:
+        type: array
+        items:
+          $ref: '#/definitions/Email'
+      userId:
+        type: string
+        description: "User's userid"
+        example: "patrickStar123"
+      externalId:
+        type: string
+        description: "User's userid"
+        example: "patrickStar123"
+      id:
+        type: string
+        description: "Unique identifier for the user as defined by the Service Provider. The value of the id attribute is always issued by the Service Provider and must never be specified by the Service Consumer."
+        example: "d3459481-fb1c-48bb-8685-40eb629e2ae1"
+      identifications:
+        type: array
+        items:
+          $ref: '#/definitions/Identification'
+      ims:
+        type: array
+        items:
+          $ref: '#/definitions/Im'
+      locale:
+        description: "Used to indicate the User’s default location for purposes of localizing items such as currency, date time format, or numerical representations."
+        type: string
+        example: en-US
+      meta:
+        $ref: '#/definitions/Meta'
+      name:
+        $ref: '#/definitions/Name'
+      nickName:
+        description: "The casual way to address the user in real life, e.g., 'Bob' or 'Bobby' instead of 'Robert'. This attribute should not be used to represent a User’s username (e.g., 'bjensen' or 'mpepperidge')."
+        type: string
+      password:
+        type: string
+      phoneNumbers:
+        type: array
+        items:
+          $ref: '#/definitions/PhoneNumber'
+      photos:
+        type: array
+        items:
+          $ref: '#/definitions/Photo'
+      preferredLanguage:
+        type: string
+        description: "Indicates the User’s preferred written or spoken language. Generally used for selecting a localized user interface; e.g., 'en_US' specifies the language English and country US."
+        example: en
+      profileUrl:
+        description: "A fully qualified URL pointing to a page representing the User’s online profile."
+        example: "mastercard.com/patrickStar"
+        type: string
+      timezone:
+        description: "The User’s time zone in the 'Olson' time zone database format, e.g., 'America/Los_Angeles'."
+        example: "America/Los_Angeles"
+        type: string
+      title:
+        description: "The user’s title, such as 'Vice President'."
+        example: "Vice President"
+        type: string
+      userName:
+        type: string
+        description: "Unique identifier for the User, typically used by the user to directly authenticate to the service provider. Each User must include a non-empty userName value. This identifier must be unique across the service provider’s entire set of Users."
+        example: "patrickStar123"
+      userType:
+        description: "Used to identify the relationship between the organization and the user. Typical values used might be 'Contractor', 'Employee', 'Intern', 'Temp', 'External', and 'Unknown', but any value may be used."
+        example: "Intern"
+        type: string
+      dateOfBirth:
+        description: "date of birth of user"
+        example: "1992-11-17"
+        type: string
+        format: date
+  Address:
+    type: object
+    properties:
+      country:
+        type: string
+        description: "The country name component."
+        example: "US"
+      formatted:
+        description: "The full mailing address, formatted for display or use with a mailing label. This attribute may contain newlines."
+        example: "99 Mason Street #999 Jersey City, NJ 07302"
+        type: string
+      locality:
+        type: string
+        description: "The city or locality component."
+        example: city
+      operation:
+        type: string
+      postalCode:
+        type: string
+        description: "The zip code or postal code component."
+        example: '63366'
+      primary:
+        type: boolean
+        description: "A Boolean value indicating the 'primary' or preferred address. The primary attribute value 'true' must appear no more than once."
+        example: false
+      ref:
+        type: string
+      region:
+        description: "The state or region component."
+        example: "New Jersey"
+        type: string
+      streetAddress:
+        type: string
+        example: "123 Main St."
+        description: "Street address of residence (Line 1)"
+      streetAddress2:
+        type: string
+        example: "Suite 20"
+        description: "Street address of residence (Line 2)"
+      type:
+        type: string
+        example: "work"
+        description: "A label indicating the attribute’s function, Accepted values include: [work, home, billing, shipping, other]"
+  Email:
+    type: object
+    properties:
+      display:
+        description: "A human-readable name, primarily used for display purposes."
+        example: "patrickstar@example.com"
+        type: string
+      operation:
+        type: string
+      primary:
+        type: boolean
+        description: "A Boolean value indicating the 'primary' or preferred email, The primary attribute value 'true' must appear no more than once."
+        example: false
+      ref:
+        type: string
+      type:
+        type: string
+        description: "A label indicating the attribute’s function, Accepted values include: [work, home, other]"
+        example: "home"
+      value:
+        type: string
+        description: "Email address of the user e.g. 'bjensen@example.com'"
+        example: sally.cardholder@mail.com
+  Im:
+    type: object
+    properties:
+      display:
+        description: "A human-readable name, primarily used for display purposes. read-only."
+        example: "patrickStar123"
+        type: string
+      operation:
+        type: string
+      primary:
+        description: "A Boolean value indicating the 'primary' or preferred messenger, The primary attribute value 'true' must appear no more than once."
+        type: boolean
+        example: false
+      ref:
+        type: string
+      type:
+        description: "A label indicating the attribute’s function, Accepted values include: [aim, gtalk, icq, xmpp, msn, skype, qq, yahoo]"
+        example: "aim"
+        type: string
+      value:
+        description: "Instant messaging address for the User"
+        example: "patrickStar123"
+        type: string
+  Meta:
+    type: object
+    properties:
+      attributes:
+        type: array
+        items:
+          type: string
+      created:
+        description: "Timestamp of when this user was created, format date-time"
+        example: "2018-07-20T09:32:33.891Z"
+        type: string
+        format: date-time
+      lastModified:
+        description: "Timestamp of when this user's info was last modified, format date-time"
+        example: "2018-07-20T09:32:33.891Z"
+        type: string
+        format: date-time
+      location:
+        type: string
+      resourceType:
+        type: string
+      version:
+        type: string
+  Name:
+    type: object
+    properties:
+      familyName:
+        description: "Last name of user"
+        type: string
+        example: Cardholder
+      formatted:
+        description: "The full name, including all middle names, titles, and suffixes as appropriate, formatted for display(e.g., 'Ms. Barbara J Jensen, III')."
+        type: string
+        example: Sally Cardholder
+      givenName:
+        description: "First name of user"
+        type: string
+        example: Sally
+      honorificPrefix:
+        description: "Honorific prefix such as 'Mr.', 'Ms.', 'Dr.'"
+        type: string
+        example: Ms.
+      honorificSuffix:
+        description: "Honorific suffix such as 'Sr.', 'III', 'MD'"
+        type: string
+        example: Sr.
+      middleName:
+        description: "Middle name of user"
+        type: string
+        example: Q.
+  PhoneNumber:
+    type: object
+    properties:
+      display:
+        description: "Display for user's given phonenumber"
+        type: string
+      operation:
+        type: string
+      primary:
+        description: "Identifies if the phone number is primary (true/false)"
+        type: boolean
+        example: false
+      ref:
+        type: string
+      type:
+        description: "Phone number type. Accepted values include: [work, home, mobile, fax, pager, other]"
+        type: string
+        example: "fax"
+      value:
+        description: "Phone number of the User (e.g. tel:+1-201-555-0123)"
+        example: "tel:+1-201-555-0123"
+        type: string
+  Photo:
+    type: object
+    properties:
+      display:
+        description: "A human-readable name, primarily used for display purposes. read-only."
+        example: "portrait"
+        type: string
+      operation:
+        type: string
+      primary:
+        description: "If this is the primary photo for user"
+        type: boolean
+        example: false
+      ref:
+        type: string
+      type:
+        description: "A label indicating the attribute’s function, Accepted values include: [photo, thumbnail]"
+        example: "thumbnail"
+        type: string
+      value:
+        description: "URL of a photo of the User."
+        example: "mastercard.com/patrickStar/photos/1"
+        type: string
+  Identification:
+    type: object
+    properties:
+      country:
+        type: string
+        description: "Country the identification originated from"
+        example: "BR"
+      type:
+        description: "The type of identification. Accepted values include: [ssn, cpf, driver’s license, pan, passport, adhaar]"
+        type: string
+        example: "CPF"
+      value:
+        type: string
+        description: "The value of the respective identification (eg. for ssn, the value would be 9 digits.)"
+        example: "231.002.999-00"
