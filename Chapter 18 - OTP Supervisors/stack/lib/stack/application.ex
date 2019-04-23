@@ -10,7 +10,8 @@ defmodule Stack.Application do
     children = [
       # Starts a worker by calling: Stack.Worker.start_link(arg)
       # {Stack.Worker, arg}
-      {StackServer, "initial_value"}
+      {Stack.Stash, "initial_element"},
+      {Stack.Server, nil}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

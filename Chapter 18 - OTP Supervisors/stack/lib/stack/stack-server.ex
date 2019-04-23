@@ -1,4 +1,4 @@
-defmodule StackServer do
+defmodule Stack.Server do
 	
 	use GenServer
 
@@ -9,7 +9,7 @@ defmodule StackServer do
 	end
 
 	def start_link(_) do
-		GenServer.start_link(StackServer, :ok, name: @server)
+		GenServer.start_link(Stack.Server, Stack.Stash.get, name: @server)
 	end
 
 	def pop do
@@ -45,9 +45,8 @@ defmodule StackServer do
 		{:stop, reason, current_state}
 	end
 
-	def terminate(reason, state) do
-		IO.puts "Terminating... #{inspect reason}"
-		IO.puts "State: #{inspect state}"
+	def terminate(_reason, state) do
+		Stack.Stash.update(state)
 	end
 
 	# handle_call(request, from, state)
@@ -56,6 +55,5 @@ defmodule StackServer do
 	# terminate(reason, state)
 	# code_change(from_version, state, extra)
 	# format_status(reason, [pdict, state])
-
 
 end
