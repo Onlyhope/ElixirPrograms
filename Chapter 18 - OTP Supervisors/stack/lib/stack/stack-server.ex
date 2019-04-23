@@ -8,9 +8,8 @@ defmodule StackServer do
 		@server
 	end
 
-	def start do
+	def start_link(_) do
 		GenServer.start_link(StackServer, :ok, name: @server)
-		GenServer.call(@server, :pop)
 	end
 
 	def pop do
@@ -57,5 +56,6 @@ defmodule StackServer do
 	# terminate(reason, state)
 	# code_change(from_version, state, extra)
 	# format_status(reason, [pdict, state])
+
 
 end
