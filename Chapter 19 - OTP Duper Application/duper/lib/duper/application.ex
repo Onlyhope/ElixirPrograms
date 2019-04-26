@@ -10,7 +10,11 @@ defmodule Duper.Application do
     children = [
       # Starts a worker by calling: Duper.Worker.start_link(arg)
       # {Duper.Worker, arg}
-      Duper.Results
+      Duper.Results,
+      # { Duper.PathFinder, "D:\\Workspace\\ElixirPrograms\\Chapter 19 - OTP Duper Application\\duper\\deps"},
+      { Duper.PathFinder, "."},
+      Duper.WorkerSupervisor,
+      { Duper.Gatherer, 1},
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -25,8 +25,6 @@ defmodule Duper.Results do
 	end
 
 	def handle_cast({:add, path, hash}, results) do
-		
-		
 		# else update with result of this fn
 		results = 
 			Map.update(
