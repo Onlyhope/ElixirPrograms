@@ -9,10 +9,10 @@ defmodule Stack.Server do
 	end
 
 	def start_link(_) do
-		GenServer.start_link(Stack.Server, Stack.Stash.get, name: @server)
+		GenServer.start_link(Stack.Server, nil, name: @server)
 	end
 
-	def pop do
+	def pop() do
 		GenServer.call(@server, :pop)
 	end
 
@@ -24,8 +24,8 @@ defmodule Stack.Server do
 		GenServer.cast(@server, {:stop, reason})
 	end
 
-	def init(initial_content) do 
-		{:ok, [initial_content]}
+	def init(_) do 
+		{:ok, []}
 	end
 
 	def handle_call(:pop, _from, []) do
