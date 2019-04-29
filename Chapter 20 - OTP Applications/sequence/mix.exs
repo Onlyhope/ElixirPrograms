@@ -18,7 +18,7 @@ defmodule Sequence.MixProject do
       mod: {Sequence.Application, []},
       registered: [Sequence.Server],
       env: [
-        initial_number: 456,
+        initial_state: %Sequence.State{current_number: 0, delta: 1},
       ]
     ]
   end

@@ -10,7 +10,7 @@ defmodule Sequence.Application do
     children = [
       # Starts a worker by calling: Sequence.Worker.start_link(arg)
       # {Sequence.Worker, arg}
-      {Sequence.Stash, Application.get_env(:sequence, :initial_number)},
+      {Sequence.Stash, Application.get_env(:sequence, :initial_state)},
       {Sequence.Server, nil}
     ]
 

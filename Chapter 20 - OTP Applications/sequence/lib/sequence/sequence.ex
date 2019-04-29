@@ -6,10 +6,6 @@ defmodule Sequence.Server do
 
 	@vsn "1"
 
-	defmodule State do
-		defstruct(current_number: 0, delta: 1)
-	end
-
 	# External API
 
 	def start_link(_) do
@@ -30,7 +26,7 @@ defmodule Sequence.Server do
 	end
 
 	def init(_) do
-		state = %State{current_number: Sequence.Stash.get()}
+		state = Sequence.Stash.get()
 		{:ok, state}
 	end
 
@@ -61,8 +57,8 @@ defmodule Sequence.Server do
 		{:ok, new_state}
 	end
 
-	def terminate(_reason, current_number) do
-		Sequence.Stash.update(current_number)
+	def terminate(_reason, state) do
+		Sequence.Stash.update(state)
 	end
 end
 
