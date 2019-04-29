@@ -2,16 +2,21 @@ defmodule Sequence.Server do
 	
 	use GenServer
 
-	@vsn "0"
+	@vsn "1"
+
+	defmodule State do
+		defstruct(current_number: 0, delta: 1)
+	end
 
 	# External API
 
-	def start_link(current_number) do
-		GenServer.start_link(__MODULE__, current_number, name: __MODULE__)
+	def start_link(_) do
+		GenServer.start_link(__MODULE__, nil, name: __MODULE__)
 	end
 
 	def next_number do
-		GenServer.call(__MODULE__, :next_number)
+		with number = GenServer.call(__MODULE__, :next_number),
+		do: "The next number is #{number}"
 	end
 
 	def increment_number(delta) do
@@ -19,19 +24,20 @@ defmodule Sequence.Server do
 	end
 
 	def init(_) do
-		{:ok, Sequence.Stash.get()}
+		state = %State{current_number: Sequence.Stash.get()}
+		{:ok, state}
 	end
 
-	def handle_call(:next_number, _from, current_number) do
-		{:reply, current_number, current_number + 1}
+	def handle_call(:next_number, _from, state = %{current_number: n}) do
+		{:reply, n, %{state | current_number: n + state.delta}}
 	end
 
-	def handle_call({:set_number, new_number}, _from, _current_number) do
-		{:reply, new_number, new_number}
+	def handle_call({:set_number, new_number}, _from, state) do
+		{:reply, new_number, %{state | current_number: new_number}}
 	end
 
-	def handle_cast({:increment_number, delta}, current_number) do
-		{:noreply, current_number + delta}
+	def handle_cast({:increment_number, delta}, state) do
+		{:noreply, %{state | delta: delta}}
 	end
 
 	def format_status(_reason, [_pdict, state]) do
