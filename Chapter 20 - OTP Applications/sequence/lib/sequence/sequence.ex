@@ -1,5 +1,7 @@
 defmodule Sequence.Server do
 	
+	require Logger
+
 	use GenServer
 
 	@vsn "1"
@@ -12,6 +14,10 @@ defmodule Sequence.Server do
 
 	def start_link(_) do
 		GenServer.start_link(__MODULE__, nil, name: __MODULE__)
+	end
+
+	def set_number(n) do
+		GenServer.call(__MODULE__, {:set_number, n})
 	end
 
 	def next_number do
@@ -42,6 +48,17 @@ defmodule Sequence.Server do
 
 	def format_status(_reason, [_pdict, state]) do
 		[data: [{'State', "My Current state is '#{inspect state}', and I'm happy"}]]
+	end
+
+	def code_channge("0", old_state = current_number, _extra) do
+		new_state = %State{
+			current_number: current_number,
+			delta: 1
+		}
+		Logger.info "Channging code from 0 to 1"
+		Logger.info inspect(old_state)
+		Logger.info inspect(new_state)
+		{:ok, new_state}
 	end
 
 	def terminate(_reason, current_number) do
