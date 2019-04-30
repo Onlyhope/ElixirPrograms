@@ -23,3 +23,5 @@ children = [
 ]
 
 Supervisor.start_link(children, strategy: :one_for_one)
+
+# Task is essentially a fuction that runs in the background and can be used as a state
