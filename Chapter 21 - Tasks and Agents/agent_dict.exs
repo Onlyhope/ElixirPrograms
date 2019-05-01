@@ -16,3 +16,5 @@ defmodule Frequency do
 	end
 
 end
+
+IO.puts "Hello World"
