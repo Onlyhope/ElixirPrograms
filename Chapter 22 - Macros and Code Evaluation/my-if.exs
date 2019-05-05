@@ -1,20 +1,34 @@
 defmodule My do
-	def myIf(condition, clauses) do
-		IO.puts "Condition: #{inspect(condition)}"
-		IO.puts "Clauses: #{inspect(clauses)}"
-
+	defmacro if(condition, clauses) do
+		# IO.puts "Condition: #{inspect(condition)}"
+		# IO.puts "Clauses: #{inspect(clauses)}"
 
 		do_clause = Keyword.get(clauses, :do, nil)
 		else_clause = Keyword.get(clauses, :else, nil)
 
-
-		case condition do
-			val when val in [false, nil]
-				-> else_clause
-			_otherwise
-				-> do_clause
+		# IO.puts "do_clause: #{inspect do_clause}"
+		# IO.puts "else_clause: #{inspect else_clause}"
+		quote do
+			case unquote(condition) do
+				val when val in [false, nil]
+					-> 
+						unquote else_clause
+				_otherwise
+					-> 
+						unquote do_clause
+			end
 		end
 	end
 end
 
-My.myIf 1==2, do: (IO.puts "1 == 2"), else: (IO.puts "1 != 2")
+defmodule Test do
+	
+	require My
+
+	My.if 1 == 2 do
+		IO.puts "1 == 2"
+	else
+		IO.puts "1 != 2"
+	end
+
+end
