@@ -4,6 +4,10 @@ defmodule My do
 		IO.inspect(param)
 	end
 
+	def aFunc(x) do
+		IO.puts "#{inspect x}"
+	end
+
 end
 
 defmodule Test do
@@ -39,5 +43,9 @@ defmodule Test do
 		3 + 4
 	end
 	# [do: {:+, [line: 37], [1, 2]}, else: {:+, [line: 39], [3, 4]}]
+
+	My.macro(My.aFunc(2))
+	# {{:., [line: 47], [{:__aliases__, [line: 47], [:My]}, :aFunc]}, [line: 47], [2]}
+
 
 end
