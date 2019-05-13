@@ -54,4 +54,15 @@ Test.add_list([5,6,7,8])
 # Explore the module and use it to colorize our tracing's output
 # Why does passing a list of strings to IO.puts work?
 
+# It works because it is within a quote block and will be interpreted
+# as code to be executed later.
+
+# Exercise: LinkingMOdules-BehavioursAndUse-3
+
+# (Hard) Try adding a method definition with a guard clause to the Test module.
+# You'll find that the tracing no longer works.
+# Find out why
+# See if you can fix it.
+
+
 
