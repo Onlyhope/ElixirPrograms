@@ -1,5 +1,7 @@
 defmodule Tracer do
 
+	import IO.ANSI
+
 	def dump_defn(name, args) do
 		"{name}(#{dump_args(args)})"
 	end
@@ -9,11 +11,27 @@ defmodule Tracer do
 	end
 
 	defmacro def(definition = {name, _, args}, do: content) do
+		IO.puts "Definition: "
+		IO.inspect definition
+		IO.puts "Content: "
+		IO.inspect content
 		quote do
 			Kernel.def(unquote(definition)) do
-				IO.puts "==> call: #{Tracer.dump_defn(unquote(name), unquote(args))}"
+
+				IO.puts [
+					"==> call: ",
+					black(), blue_background(),
+					"#{Tracer.dump_defn(unquote(name), unquote(args))}",
+					default_color(), default_background()
+				]
+
 				result = unquote(content)
-				IO.puts "<== result: #{inspect result}"
+				IO.puts [
+					"<== result: ",
+					black(), green_background(),
+					"#{inspect result}",
+					default_color(), default_background()
+				]
 				result
 			end
 		end
@@ -31,11 +49,14 @@ defmodule Test do
 	use Tracer
 	def puts_sum_three(a,b,c), do: a + b + c
 	def add_list(list), do: Enum.reduce(list, 0, &(&1 + &2))
+	def divide(n, d) when d != 0 do
+		n / d
+	end
 end
 
 Test.puts_sum_three(1,2,3)
 Test.add_list([5,6,7,8])
-
+Test.divide(6,3)
 # Exercise: LinkingModulesBeavioursAndUse-1
 # In the body of the def macro, there's a quote block that defines
 # the actual method. Why does the first call to puts have to unquote
