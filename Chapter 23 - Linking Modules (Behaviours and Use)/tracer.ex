@@ -2,22 +2,50 @@ defmodule Tracer do
 
 	import IO.ANSI
 
-	def dump_defn(name, args) do
-		"{name}(#{dump_args(args)})"
+	defmacro __using__(_opts) do
+		quote do
+			import Kernel, except: [def: 2]
+			import unquote(__MODULE__), only: [def: 2]
+		end
 	end
 
-	def dump_args(args) do
-		args |> Enum.map(&inspect/1) |> Enum.join(", ")
-	end
-
-	defmacro def(definition = {name, _, args}, do: content) do
-		IO.puts "Definition: "
+	defmacro def({:when, _, [definition, conditions]}, do: content) do
+		IO.puts "Definition"
 		IO.inspect definition
-		IO.puts "Content: "
+		IO.puts "Conditions"
+		IO.inspect conditions
+		IO.puts "Content"
 		IO.inspect content
+
+		{name, _, args} = definition
+
+		IO.inspect args
+
+		# Evaluate the conditions
+		quote do
+			IO.puts "Evaluated Conditions"
+			IO.puts "#{Tracer.dump_defn(unquote(name), [1,2])}"
+			IO.inspect "#{unquote(conditions)}" 
+			# Inject conditions code to be run, but d is not defined
+			# Args aren't defined as well. Only name is.
+			IO.inspect unquote(trace_def(definition, content))
+		end
+
+
+
+		# If true, continue normally with definition and results
+		
+
+		# If not true, print which condition fails
+	end
+
+	defmacro def(definition, do: content) when is_tuple(definition) do
+		trace_def(definition, content)
+	end
+
+	def trace_def(definition = {name, _, args}, content) do
 		quote do
 			Kernel.def(unquote(definition)) do
-
 				IO.puts [
 					"==> call: ",
 					black(), blue_background(),
@@ -37,26 +65,49 @@ defmodule Tracer do
 		end
 	end
 
-	defmacro __using__(_opts) do
-		quote do
-			import Kernel, except: [def: 2]
-			import unquote(__MODULE__), only: [def: 2]
-		end
+	def dump_defn(name, args) do
+		"#{name}(#{dump_args(args)})"
 	end
+
+	def dump_args(args) do
+		args |> Enum.map(&inspect/1) |> Enum.join(", ")
+	end
+
 end
 
 defmodule Test do
 	use Tracer
 	def puts_sum_three(a,b,c), do: a + b + c
 	def add_list(list), do: Enum.reduce(list, 0, &(&1 + &2))
-	def divide(n, d) when d != 0 do
-		n / d
-	end
+	def my_divide(n,d) when d != 0, do: n / d 
 end
 
 Test.puts_sum_three(1,2,3)
+
+# Definition
+# {:puts_sum_three, [line: 80],
+#  [{:a, [line: 80], nil}, {:b, [line: 80], nil}, {:c, [line: 80], nil}]}
+# Content
+# {:+, [line: 80],
+#  [
+#    {:+, [line: 80], [{:a, [line: 80], nil}, {:b, [line: 80], nil}]},
+#    {:c, [line: 80], nil}
+#  ]}
+
 Test.add_list([5,6,7,8])
-Test.divide(6,3)
+
+# Definition
+# {:add_list, [line: 81], [{:list, [line: 81], nil}]}
+# Content
+# {{:., [line: 81], [{:__aliases__, [line: 81], [:Enum]}, :reduce]}, [line: 81],
+#  [
+#    {:list, [line: 81], nil},
+#    0,
+#    {:&, [line: 81],
+#     [{:+, [line: 81], [{:&, [line: 81], [1]}, {:&, [line: 81], [2]}]}]}
+#  ]}
+
+Test.my_divide(30,15)
 # Exercise: LinkingModulesBeavioursAndUse-1
 # In the body of the def macro, there's a quote block that defines
 # the actual method. Why does the first call to puts have to unquote
