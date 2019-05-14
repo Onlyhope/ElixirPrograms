@@ -22,16 +22,7 @@ defmodule Tracer do
 		IO.inspect args
 
 		# Evaluate the conditions
-		quote do
-			IO.puts "Evaluated Conditions"
-			IO.puts "#{Tracer.dump_defn(unquote(name), [1,2])}"
-			IO.inspect "#{unquote(conditions)}" 
-			# Inject conditions code to be run, but d is not defined
-			# Args aren't defined as well. Only name is.
-			IO.inspect unquote(trace_def(definition, content))
-		end
-
-
+		trace_def(definition, content, conditions)
 
 		# If true, continue normally with definition and results
 		
@@ -41,6 +32,34 @@ defmodule Tracer do
 
 	defmacro def(definition, do: content) when is_tuple(definition) do
 		trace_def(definition, content)
+	end
+
+	def trace_def(definition = {name, _, args}, content, conditions) do
+		quote do
+			Kernel.def(unquote(definition)) do
+				case unquote(conditions) do
+					true ->
+						IO.puts [
+							"==> call: ",
+							black(), blue_background(),
+							"#{Tracer.dump_defn(unquote(name), unquote(args))}",
+							default_color(), default_background()
+						]
+
+						result = unquote(content)
+						IO.puts [
+							"<== result: ",
+							black(), green_background(),
+							"#{inspect result}",
+							default_color(), default_background()
+						]
+						result
+					false ->
+						IO.puts "Failed conditions with #{inspect unquote(args)}"
+				end
+
+			end
+		end
 	end
 
 	def trace_def(definition = {name, _, args}, content) do
@@ -65,6 +84,14 @@ defmodule Tracer do
 		end
 	end
 
+	def eval(args, conditions) do
+		quote do
+			IO.puts "Args: #{inspect unquote(args)}"
+			IO.puts "Conditions: #{inspect unquote(conditions)}"
+		end
+
+	end
+
 	def dump_defn(name, args) do
 		"#{name}(#{dump_args(args)})"
 	end
@@ -79,7 +106,7 @@ defmodule Test do
 	use Tracer
 	def puts_sum_three(a,b,c), do: a + b + c
 	def add_list(list), do: Enum.reduce(list, 0, &(&1 + &2))
-	def my_divide(n,d) when d != 0, do: n / d 
+	def my_divide(n,d) when d != 0 and d < 10, do: n / d 
 end
 
 Test.puts_sum_three(1,2,3)
