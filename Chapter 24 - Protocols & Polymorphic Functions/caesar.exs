@@ -31,6 +31,7 @@ end
 
 IO.inspect Caesar.encrypt("123", 1)
 IO.inspect Caesar.encrypt('123', 1)
+IO.inspect Caesar.encrypt('123', "123")
 IO.inspect Caesar.encrypt(123, 1)
 
 # Exercise: Protocols-2
