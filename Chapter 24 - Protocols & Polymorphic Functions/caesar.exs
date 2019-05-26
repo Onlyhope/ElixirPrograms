@@ -11,6 +11,10 @@ defimpl Caesar, for: [BitString] do
 		|> List.to_string
 	end
 
+	def rot13(string) do
+		encrypt(string, 13)
+	end
+
 	defp shift(letter, n) when letter > 96 and letter < 123 do
 		letter + rem(n, 26)
 	end
@@ -28,6 +32,10 @@ defimpl Caesar, for: [List] do
 	def encrypt(string, shift) do
 		Enum.map(string, fn x -> shift(x, shift) end)
 		|> List.to_string
+	end
+
+	def rot13(string) do
+		encrypt(string, 13)
 	end
 
 	defp shift(letter, n) when letter > 96 and letter < 123 do
@@ -60,6 +68,8 @@ end
 IO.inspect Caesar.encrypt("aBc", 27)
 IO.inspect Caesar.encrypt('abc', 27)
 IO.inspect Caesar.encrypt('aBC', 27)
+IO.inspect Caesar.rot13("abc")
+IO.inspect Caesar.rot13('abc')
 IO.inspect Caesar.encrypt(123, 1)
 
 # Exercise: Protocols-2
