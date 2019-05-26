@@ -6,14 +6,42 @@ end
 
 defimpl Caesar, for: [BitString] do
 	def encrypt(string, shift) do
-		"String is a bitString"
+		to_charlist(string)
+		|> Enum.map(fn x -> shift(x, shift) end)
+		|> List.to_string
+	end
+
+	defp shift(letter, n) when letter > 96 and letter < 123 do
+		letter + rem(n, 26)
+	end
+
+	defp shift(letter, n) when letter > 64 and letter < 91 do
+		letter + rem(n, 26)
+	end
+
+	defp shift(letter, n) do
+		letter + n
 	end
 end
 
 defimpl Caesar, for: [List] do
 	def encrypt(string, shift) do
-		"String is a list"
+		Enum.map(string, fn x -> shift(x, shift) end)
+		|> List.to_string
 	end
+
+	defp shift(letter, n) when letter > 96 and letter < 123 do
+		letter + rem(n, 26)
+	end
+
+	defp shift(letter, n) when letter > 64 and letter < 91 do
+		letter + rem(n, 26)
+	end
+
+	defp shift(letter, n) do
+		letter + n
+	end
+
 end
 
 defimpl Caesar, for: Any do
@@ -29,8 +57,9 @@ end
 # that applies to both. It would include two functions:
 # encrypt(string, shift) and rot13(string)
 
-IO.inspect Caesar.encrypt("123", 1)
-IO.inspect Caesar.encrypt('123', 1)
+IO.inspect Caesar.encrypt("aBc", 27)
+IO.inspect Caesar.encrypt('abc', 27)
+IO.inspect Caesar.encrypt('aBC', 27)
 IO.inspect Caesar.encrypt(123, 1)
 
 # Exercise: Protocols-2
