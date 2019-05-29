@@ -55,7 +55,7 @@ defimpl Enumerable, for: ListWrapper do
 	def count(enumerable = %ListWrapper{content: list}) do
 
 		reducer =
-			fn (_, count) -> {:cont, count + 1} end
+		fn (_, count) -> {:cont, count + 1} end
 
 		{:ok, Enum.reduce(enumerable, 0, reducer)}
 	end
@@ -63,17 +63,25 @@ defimpl Enumerable, for: ListWrapper do
 	def member?(enumerable = %ListWrapper{content: list}, e) do
 
 		reducer = 
-			fn
-				v, _ when v == e -> {:halt, true}
-				_, _ -> {:cont, false}
-			end
+		fn
+			v, _ when v === e -> {:halt, true}
+			_, _ -> {:cont, false}
+		end
 
 		{:ok, Enum.reduce(enumerable, false, reducer)}
 	end
 
 	def slice(enumerable = %ListWrapper{content: list}) do
 		IO.puts "slice not implemented yet: #{inspect enumerable}"
-		{:error, __MODULE__}
+
+		count = Enum.count(enumerable)
+		
+		slice_fun =
+		fn 
+			beg_ind, end_ind -> IO.puts "beg_ind: #{inspect beg_ind} end_ind: #{inspect end_ind}" 
+		end
+
+		{:ok, count, slice_fun}
 	end
 
 end
@@ -102,7 +110,10 @@ defmodule MyTest do
 
 		IO.inspect Enum.count(list)
 		IO.inspect Enum.member?(list, 3)
-		IO.inspect Enum.member?(list, 5)		
+		IO.inspect Enum.member?(list, 5)
+		IO.inspect Enum.slice(list, 1, 3)	
+		IO.inspect Enum.slice(list, 1..3)
+
 	end
 end
 
