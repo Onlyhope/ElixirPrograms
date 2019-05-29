@@ -1,3 +1,10 @@
+defprotocol Enumerable do
+	def count(collection)
+	def reduce(collection, acc, fun)
+	def member?(collection, value)
+	def slice(collection)
+end
+
 defmodule ListWrapper do
 
 	defstruct(content: [])
@@ -44,7 +51,7 @@ defimpl Enumerable, for: ListWrapper do
 	end
 
 	def count(%ListWrapper{content: list}) do
-		count = Enum.reduce(list, 0, fn(_, count) -> count + 2 end)
+		count = Enum.reduce(list, 0, fn(_, count) -> count + 1 end)
 		{:ok, count}
 	end
 
@@ -61,18 +68,33 @@ defimpl Enumerable, for: ListWrapper do
 end
 
 defimpl Inspect, for: ListWrapper do
+	
+	# Exercise: Protocols-4
+
+	# In many cases, inspect will return a valid Elixir literal
+	# for the value being inspected. Update the inspect function
+	# for structs so that it returns valid Elixir code to construct
+	# a new struct equal to the value being inspected
+
+	# Can re-implement with Inspect.Algebra for more accuracy
+
 	def inspect(%ListWrapper{content: list}, opts) do
 		"ListWrapper[ #{list} ]"
 	end
 end
 
+defmodule MyTest do
+	def run() do
+		list = ListWrapper.wrap([1,2,3,4])
 
+		IO.inspect list
 
-list = ListWrapper.wrap([1,2,3])
+		IO.inspect Enum.count(list)
+		IO.inspect Enum.member?(list, 1)
+		IO.inspect Enum.member?(list, 5)		
+	end
+end
 
-IO.inspect list
+MyTest.run
 
-IO.inspect Enum.count(list)
-IO.inspect Enum.member?(list, 1)
-IO.inspect Enum.member?(list, 5)
 
