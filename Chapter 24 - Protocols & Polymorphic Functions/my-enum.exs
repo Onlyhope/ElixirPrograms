@@ -48,10 +48,23 @@ defimpl Enumerable, for: ListWrapper do
 		{:ok, count}
 	end
 
-	def member?(collection = %ListWrapper{content: list}, _) do
+	def member?(collection = %ListWrapper{content: list}, e) do
 		IO.puts "Not implemented yet: #{inspect collection}"
-		{:error, __MODULE__}
-	end		
+		reducer = fn(x, acc) -> 
+			if acc do
+				true
+			else 
+				false
+			end
+		end
+		result = Enum.reduce(list, false, reducer);
+		IO.puts "Result #{inspect result}"
+	end
+
+	def member?(_arg1, _arg2) do
+		IO.inspect _arg1
+		IO.inspect _arg2
+	end
 
 	def slice(collection = %ListWrapper{content: list}) do
 		IO.puts "Not implemented yet: #{inspect collection}"
