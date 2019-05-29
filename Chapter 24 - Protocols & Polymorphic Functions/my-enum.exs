@@ -21,7 +21,7 @@ defimpl Enumerable, for: Test do
 	# Implement youur own versions of each, filter,
 	# and map in terms of reduce.
 
-	def reduce(%Test, state, fun) when is_list(list) do
+	def reduce(list, state, fun) when is_list(list) do
 		IO.inspect list
 		IO.inspect state
 		_reduce(list, state, fun)
@@ -55,6 +55,6 @@ defimpl Enumerable, for: Test do
 	def slice(_) do
 		{:error, __MODULE__}
 	end
-	
+
 end
 
