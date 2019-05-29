@@ -70,7 +70,7 @@ defimpl Enumerable, for: ListWrapper do
 		IO.puts "Not implemented yet: #{inspect collection}"
 		{:error, __MODULE__}
 	end
-	
+
 end
 
 defimpl Inspect, for: ListWrapper do
