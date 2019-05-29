@@ -1,8 +1,8 @@
 defprotocol Enumerable do
-	def count(collection)
-	def reduce(collection, acc, fun)
-	def member?(collection, value)
-	def slice(collection)
+	def count(enumerable)
+	def reduce(enumerable, acc, fun)
+	def member?(enumerable, value)
+	def slice(enumerable)
 end
 
 defmodule ListWrapper do
@@ -18,7 +18,7 @@ defimpl Enumerable, for: ListWrapper do
 	
 	# Exercise: Protocols-3
 
-	# Collections that implement the Enumerable protocol
+	# enumerables that implement the Enumerable protocol
 	# define count, member?, reduce, and slice fuunctions.
 	# The Enum module uses these to implement methods
 	# such as each, filter, and map
@@ -27,54 +27,52 @@ defimpl Enumerable, for: ListWrapper do
 	# and map in terms of reduce.
 
 	def reduce(%ListWrapper{content: list}, state, fun) when is_list(list) do
-		IO.inspect list
-		IO.inspect state
+		IO.puts "Initial Reduce: #{inspect list} #{inspect state}"
 		_reduce(list, state, fun)
 	end
 
 	def _reduce(_list, {:halt, acc}, _fun) do
+		IO.puts "Halting..."
 		{:halted, acc}
 	end
 
 	def _reduce(list, {:suspended, acc}, fun) do
+		IO.puts "Suspending..."
 		{:suspended, acc, &_reduce(list, &1, fun)}
 	end
 
 	def _reduce([], {:cont, acc}, _fun) do
+		IO.puts "Done..."
 		{:done, acc}
 	end
 
 	def _reduce(_list = [head|tail], _state = {:cont, acc}, fun) do
-		# IO.inspect _list
-		# IO.inspect _state
-		_reduce(tail, fun.(head, acc), fun)
+		result = fun.(head, acc) |> elem(1)
+		IO.inspect "Reducer result: #{inspect result}"
+		_reduce(tail, result, fun)
 	end
 
-	def count(%ListWrapper{content: list}) do
-		count = Enum.reduce(list, 0, fn(_, count) -> count + 1 end)
-		{:ok, count}
+	def count(enumerable = %ListWrapper{content: list}) do
+
+		reducer =
+			fn (_, count) -> {:cont, count + 1} end
+
+		{:ok, Enum.reduce(enumerable, 0, reducer)}
 	end
 
-	def member?(collection = %ListWrapper{content: list}, e) do
-		IO.puts "Not implemented yet: #{inspect collection}"
-		reducer = fn(x, acc) -> 
-			if acc do
-				true
-			else 
-				false
+	def member?(enumerable = %ListWrapper{content: list}, e) do
+
+		reducer = 
+			fn
+				v, _ when v == e -> {:halt, true}
+				_, _ -> {:cont, false}
 			end
-		end
-		result = Enum.reduce(list, false, reducer);
-		IO.puts "Result #{inspect result}"
+
+		{:ok, Enum.reduce(enumerable, false, reducer)}
 	end
 
-	def member?(_arg1, _arg2) do
-		IO.inspect _arg1
-		IO.inspect _arg2
-	end
-
-	def slice(collection = %ListWrapper{content: list}) do
-		IO.puts "Not implemented yet: #{inspect collection}"
+	def slice(enumerable = %ListWrapper{content: list}) do
+		IO.puts "slice not implemented yet: #{inspect enumerable}"
 		{:error, __MODULE__}
 	end
 
@@ -103,7 +101,7 @@ defmodule MyTest do
 		IO.inspect list
 
 		IO.inspect Enum.count(list)
-		IO.inspect Enum.member?(list, 1)
+		IO.inspect Enum.member?(list, 3)
 		IO.inspect Enum.member?(list, 5)		
 	end
 end
