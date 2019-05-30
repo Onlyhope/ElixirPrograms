@@ -72,19 +72,18 @@ defimpl Enumerable, for: ListWrapper do
 	end
 
 	def slice(enumerable = %ListWrapper{content: list}) do
-		IO.puts "slice not implemented yet: #{inspect enumerable}"
 
-		reducer = 
-		fn 
-			x, acc -> x + acc
-		end
-		
-		
 		slice_fun =
 		fn 
-			beg_ind, end_ind -> 
-				IO.puts "beg_ind: #{inspect beg_ind} end_ind: #{inspect end_ind}"
-				arr_result = Enum.reduce(enumerable, 0, reducer) 
+			beg_ind, end_ind ->
+				reducer = 
+				fn 
+					x, acc when x >= beg_ind and x <= end_ind -> 
+						{:cont, acc ++ [x]}
+					x, acc ->
+						{:cont, acc}
+				end
+				arr_result = Enum.reduce(enumerable, [], reducer) 
 		end
 
 		size = Enum.count(enumerable)
