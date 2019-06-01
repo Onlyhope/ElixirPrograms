@@ -8,9 +8,53 @@ defmodule CsvSigil do
 		|> Enum.map(&to_float(&1))
 	end
 
-	defp csv_to_pairs(field_names, field_values) do
+	defp pair_up(field_names, field_values) do
+
+		# 1) Iterate through the list and
+		# extract the head as an element in the tuple
+
+		# 2) Return the tuple
+
+		# 3) Collect tuple in a list
+
+		# 4) Repeat until it is done
+
+
+
+
+		reducer = fn x, acc ->
+			{}
+		end
+
+
+		Enum.reduce([field_names, field_values] [], reducer)
+	end
+
+	def pair_names_and_values(field_names, field_values) do
+		zip([field_names, field_values], [])
+	end
+
+	def zip(listOfElements, tuple_acc) do
+
+		{tuple, leftovers} = package_heads([field_names, field_values])
+
+		zip(,,tuple_acc ++ [tuple])
 		
 	end
+
+	defp package_heads(listOfElements) do
+		
+		heads = Enum.reduce(listOfElements, [], fn [h|t], acc ->
+			acc ++ [h]
+		end)
+
+		leftovers = Enum.map(listOfElements, fn [h|t] -> t end)
+
+		{heads, leftovers}
+
+	end
+
+
 
 	def test_float(list) do
 		to_float(list)
@@ -74,5 +118,4 @@ end
 
 IO.inspect Test.to_float
 IO.inspect Test.csv
-
 
