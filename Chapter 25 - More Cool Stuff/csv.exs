@@ -5,18 +5,22 @@ defmodule CsvSigil do
 		|> String.trim 
 		|> String.split("\n")
 		|> Enum.map(&String.split(&1, ","))
-		|> Enum.map(&toFloat(&1))
+		|> Enum.map(&to_float(&1))
 	end
 
-	def testFloat(list) do
-		toFloat(list)
+	defp csv_to_pairs(field_names, field_values) do
+		
 	end
 
-	defp toFloat(list) when is_list(list) do
-		Enum.map(list, &toFloat(&1))
+	def test_float(list) do
+		to_float(list)
 	end
 
-	defp toFloat(str) do
+	defp to_float(list) when is_list(list) do
+		Enum.map(list, &to_float(&1))
+	end
+
+	defp to_float(str) do
 		str
 		|> String.trim
 		|> Float.parse
@@ -58,13 +62,17 @@ defmodule Test do
 		"""
 	end
 
-	def toFloat do
+	def test_float do
 		testFloat(["1", "2.32", "3.0", " 3.2"])
+	end
+
+	def test_pairing do
+		csv_to_pairs(["Name", "Age", "Money"], ["Aaron", 26, 9325.23])
 	end
 
 end
 
-IO.inspect Test.toFloat
+IO.inspect Test.to_float
 IO.inspect Test.csv
 
 
