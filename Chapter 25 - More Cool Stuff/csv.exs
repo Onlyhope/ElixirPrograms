@@ -6,55 +6,67 @@ defmodule CsvSigil do
 		|> String.split("\n")
 		|> Enum.map(&String.split(&1, ","))
 		|> Enum.map(&to_float(&1))
+		|> csv_to_keyword
 	end
 
-	defp pair_up(field_names, field_values) do
+	def csv_to_keyword(data) do
+		[field_names | field_values_list] = data
+		pair_up(field_names, field_values_list)
+	end
 
-		# 1) Iterate through the list and
-		# extract the head as an element in the tuple
+	defp pair_up(field_names, field_values_list) do
 
-		# 2) Return the tuple
+		field_names_as_atom = Enum.map(field_names, fn 
+			x when is_atom(x) -> x
+			x when is_bitstring(x) -> String.to_atom(x)
+			x -> 
+				IO.puts "Not valid field name #{inspect x}"
+				:not_valid_field_name
+		end)
 
-		# 3) Collect tuple in a list
+		Enum.map(field_values_list, fn
+			field_values -> pair_names_and_values(field_names_as_atom, field_values)
+		end)
 
-		# 4) Repeat until it is done
-
-
-
-
-		reducer = fn x, acc ->
-			{}
-		end
-
-
-		Enum.reduce([field_names, field_values] [], reducer)
 	end
 
 	def pair_names_and_values(field_names, field_values) do
 		zip([field_names, field_values], [])
+		|> Enum.map(&List.to_tuple(&1))
+		|> Keyword.new
 	end
 
 	def zip(listOfElements, tuple_acc) do
 
-		{tuple, leftovers} = package_heads([field_names, field_values])
+		{tuple, leftovers} = package_heads(listOfElements)
 
-		zip(,,tuple_acc ++ [tuple])
+		any_leftovers? = Enum.reduce(leftovers, false, fn 
+			[], acc -> acc
+			_, _acc -> true
+		end)
+
+		case any_leftovers? do
+			true -> zip(leftovers, tuple_acc ++ [tuple])
+			false -> tuple_acc ++ [tuple]
+		end
 		
 	end
 
 	defp package_heads(listOfElements) do
 		
-		heads = Enum.reduce(listOfElements, [], fn [h|t], acc ->
-			acc ++ [h]
+		heads = Enum.reduce(listOfElements, [], fn 
+			[h|_t], acc -> acc ++ [h]
+			[], acc -> acc ++ [""]
 		end)
 
-		leftovers = Enum.map(listOfElements, fn [h|t] -> t end)
+		leftovers = Enum.map(listOfElements, fn 
+			[_h|t] -> t
+			[] -> [] 
+		end)
 
 		{heads, leftovers}
 
 	end
-
-
 
 	def test_float(list) do
 		to_float(list)
@@ -100,22 +112,42 @@ defmodule Test do
 	import CsvSigil
 
 	def csv do
+		# ~v"""
+		# 1,2,3,3.14
+		# cat,dog
+		# a,b,c
+		# """
+
 		~v"""
-		1,2,3,3.14
-		cat,dog
+		Name,Age,Money
+		Aaron Lee, 26, 9421.29
+		Rania, 26, 9329.23
+		Benjamin, 26, 1924.32
 		"""
 	end
 
-	def test_float do
-		testFloat(["1", "2.32", "3.0", " 3.2"])
+	def to_float do
+		test_float(["1", "2.32", "3.0", " 3.2"])
 	end
 
 	def test_pairing do
-		csv_to_pairs(["Name", "Age", "Money"], ["Aaron", 26, 9325.23])
+		pair_names_and_values([:Name, :Age, :Money], ["Aaron", 26, 9325.23])
+	end
+
+	def test_edge_cases do
+		zip([
+				[1, 2, 3, 4, 5],
+				["A", "B", "C"],
+				[:a, :b, :c, :d]
+			], [])
 	end
 
 end
 
 IO.inspect Test.to_float
+IO.inspect Test.test_pairing
+IO.inspect Test.test_edge_cases
+
+IO.puts "Final CSV"
 IO.inspect Test.csv
 
